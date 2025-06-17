@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autentikasi | Mabna Syekh Nawawi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/frontend/auth-style.css" />
+</head>
+<body>
+
+  <div id="introScreen" class="active">
+    <div class="intro-content">
+      <img src="/frontend/logoMSN.png" alt="Logo Portal" class="intro-logo">
+      <h1 class="intro-title">MSN PORTAL</h1>
+      <p class="intro-subtitle">Initializing Authentication System...</p>
+      <button id="enterButton" class="intro-enter-button">
+        <span>Enter</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="loadingOverlay" class="hidden">
+    <div class="loading-box">
+      <div class="loading-logo">
+          <img src="/frontend/logoMSN.png" alt="Logo Portal">
+      </div>
+      <p>Login Berhasil. Mengalihkan...</p>
+      <div class="loading-bar-container">
+        <div id="loadingProgressBar" class="loading-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container hidden" id="pageContainer">
+    <div class="branding-panel" id="brandingPanel">
+        <div id="brandingLoginContent" class="branding-content-wrapper">
+            <div class="logo-area">
+                <img src="/frontend/logoMSN.png" alt="Logo Portal" class="logo">
+            </div>
+            <div class="text-area">
+                <h2>Selamat Datang Kembali!</h2>
+                <p>Masuk untuk melanjutkan ke portal Anda.</p>
+            </div>
+            <div class="action-link-container">
+                <p>Belum punya akun?</p>
+                <a href="#" id="switchToRegisterLink" class="action-link">Daftar Sekarang</a>
+            </div>
+        </div>
+        <div id="brandingRegisterContent" class="branding-content-wrapper hidden">
+            <div class="logo-area">
+                 <img src="/frontend/logoMSN.png" alt="Logo Portal" class="logo">
+            </div>
+            <div class="text-area">
+                 <h2>Bergabunglah Bersama Kami!</h2>
+                 <p>Daftarkan diri Anda untuk mendapatkan akses penuh.</p>
+            </div>
+            <div class="action-link-container">
+                <p>Sudah punya akun?</p>
+                <a href="#" id="switchToLoginLink" class="action-link">Masuk Sekarang</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-panel" id="formPanel">
+        <div id="loginSection">
+            <div class="form-container">
+                <h1>Login Akun</h1>
+                <form id="loginForm" novalidate>
+                    <div class="error-msg hidden" id="loginErrorAlert"></div>
+                    <div class="input-group">
+                        <input type="text" id="loginUsername" name="username" placeholder=" " required autocomplete="username" />
+                        <label for="loginUsername">Username atau Email</label>
+                    </div>
+                    <div class="input-group password-group">
+                        <input type="password" id="loginPassword" name="password" placeholder=" " required autocomplete="current-password" />
+                        <label for="loginPassword">Password</label>
+                        <button type="button" id="toggleLoginPassword" class="toggle-password-button" aria-label="Toggle password visibility">👁️</button>
+                    </div>
+                    <button type="submit" id="loginSubmitButton">Masuk Sekarang</button>
+                </form>
+            </div>
+        </div>
+        </div>
+  </div>
+  
+  <script src="/frontend/auth.js" defer></script>
+</body>
+</html>

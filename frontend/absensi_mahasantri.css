@@ -1,0 +1,122 @@
+/* absensi.css */
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: rgba(0,0,0,0.1);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--border-radius-card);
+}
+
+.filter-container .form-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-container .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-on-dark-secondary);
+}
+
+.filter-container input[type="date"],
+.filter-container select {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-glass);
+    background-color: rgba(0,0,0,0.2);
+    color: var(--text-on-dark-primary);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.attendance-table-container {
+    overflow-x: auto; /* Agar tabel bisa di-scroll di layar kecil */
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.attendance-table th, .attendance-table td {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-glass);
+    vertical-align: middle;
+}
+
+.attendance-table th {
+    background-color: rgba(0,0,0,0.2);
+    color: var(--sky-blue-soft);
+    font-weight: 600;
+}
+
+.attendance-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.status-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.status-radios label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.2rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--light-blue-accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--border-glass);
+    color: var(--text-on-dark-secondary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-glass);
+    color: var(--text-on-dark-primary);
+}

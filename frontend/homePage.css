@@ -1,0 +1,243 @@
+/* homePage.css - GAYA LENGKAP DENGAN PERBAIKAN MENU */
+
+/* ==========================================================================
+   VARIABEL CSS DAN RESET DASAR
+   ========================================================================== */
+:root {
+  --primary-blue: #0000CD;
+  --light-blue-accent: #4169E1;
+  --darker-blue-base: #00008B;
+  --sky-blue-soft: #87CEEB;
+  --sky-blue-soft-rgb: 135, 206, 235;
+  
+  --text-on-dark-primary: #ffffff;
+  --text-on-dark-secondary: #e0e7ff; 
+  --text-on-light-primary: #1e293b; 
+  --text-on-light-secondary: #334155;
+
+  --bg-body-gradient-start: var(--darker-blue-base);
+  --bg-body-gradient-end: var(--primary-blue);
+
+  --section-bg: rgba(10, 25, 70, 0.35); 
+  --glass-header-bg: rgba(25, 50, 120, 0.25);
+  --border-glass: rgba(255, 255, 255, 0.12);
+
+  --header-height: 70px;
+  --border-radius-main: 18px; 
+  --border-radius-card: 14px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  color: var(--text-on-dark-secondary);
+  background: linear-gradient(45deg, var(--bg-body-gradient-start), var(--bg-body-gradient-end));
+  background-size: 200% 200%;
+  animation: gradientFlowAnimation 15s ease infinite;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+@keyframes gradientFlowAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.page-container {
+    opacity: 0;
+    animation: pageFadeInEffect 0.7s ease-out 0.5s forwards;
+}
+
+@keyframes pageFadeInEffect {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ==========================================================================
+   HEADER & NAVIGASI
+   ========================================================================== */
+header {
+  background-color: var(--glass-header-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--header-height);
+}
+
+.logo-container { display: flex; align-items: center; }
+.logo-container img.logo { height: 40px; margin-right: 0.8rem; }
+.logo-container .portal-title { font-size: 1.25rem; font-weight: 600; color: var(--text-on-dark-primary); }
+.profile { display: flex; align-items: center; gap: 0.6rem; }
+.profile #profile-name { font-weight: 500; font-size: 0.9rem; }
+.profile img#profile-pic { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sky-blue-soft); }
+
+nav#main-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--border-glass);
+}
+
+
+/* ==========================================================================
+   PERBAIKAN: STYLING MENU BARU DENGAN STRUKTUR UL > LI
+   ========================================================================== */
+#main-menu .main-menu-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#main-menu .main-menu-list > li {
+    position: relative; /* Diperlukan untuk dropdown */
+}
+#main-menu .main-menu-list > li > a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-on-dark-secondary);
+    opacity: 0.9;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.7rem 1rem;
+    margin: 0 0.3rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    border-bottom: 3px solid transparent; /* Ganti dari ::after untuk kesederhanaan */
+}
+#main-menu .main-menu-list > li > a:hover {
+    color: var(--text-on-dark-primary);
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+#main-menu .main-menu-list > li > a.active {
+    color: var(--text-on-dark-primary);
+    font-weight: 600;
+    border-bottom-color: var(--sky-blue-soft); /* Indikator aktif */
+}
+.dropdown-arrow {
+    font-size: 0.6em;
+    transition: transform 0.3s ease;
+}
+#main-menu li:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--darker-blue-base);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    list-style: none;
+    padding: 0.5rem 0;
+    margin-top: 8px; /* Jarak dari menu utama */
+    min-width: 220px;
+    z-index: 1100;
+    animation: fadeInDropdown 0.3s ease-out forwards;
+}
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+#main-menu li.has-dropdown:hover > .dropdown-menu {
+    display: block;
+}
+.dropdown-menu li a {
+    display: block;
+    padding: 0.7rem 1.5rem;
+    color: var(--text-on-dark-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.dropdown-menu li a:hover {
+    background-color: var(--light-blue-accent);
+    color: var(--text-on-dark-primary);
+}
+
+
+/* ==========================================================================
+   SISA CSS (TIDAK ADA PERUBAHAN BESAR)
+   ========================================================================== */
+.hero-section {
+  background-color: rgba(0, 0, 20, 0.3);
+  color: var(--text-on-dark-primary);
+  padding: 4.5rem 2rem;
+  text-align: center;
+}
+.hero-content h1 { font-size: 3rem; font-weight: 700; margin-bottom: 1.2rem; }
+.hero-content p { font-size: 1.2rem; max-width: 700px; margin: 0 auto; }
+
+.section {
+  background: var(--section-bg);
+  padding: 2.8rem;
+  border-radius: var(--border-radius-main);
+  margin: 3rem 0;
+  border: 1px solid var(--border-glass);
+}
+.section h2.text-center {
+    display: block; text-align: center;
+    font-size: 2rem; margin: 0 auto 1rem auto; font-weight: 600;
+}
+.section h2.text-center::after {
+    content: ''; display: block; width: 80px; height: 2px;
+    background: var(--sky-blue-soft); margin: 0.6rem auto 0 auto;
+}
+.section p.text-center {
+    text-align: center; max-width: 700px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.button-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.8rem; margin-top: 2rem;
+}
+.button-grid .action-button {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; background-color: #f8f9fa;
+  color: var(--text-on-light-primary); padding: 1.8rem 1.5rem;
+  border-radius: var(--border-radius-card); text-decoration: none;
+  font-size: 1.05rem; font-weight: 600;
+  transition: all 0.25s; border: 2px solid transparent;
+}
+.button-grid .action-button:hover {
+  transform: translateY(-7px); border-color: var(--light-blue-accent);
+}
+.button-grid .action-button i {
+  font-size: 2.2rem; margin-bottom: 0.85rem; color: var(--primary-blue);
+}
+.row { display: flex; flex-wrap: wrap; gap: 2rem; }
+.col-lg-6 { flex: 1; min-width: 300px; }
+.schedule-item, .event-item-list, .insight-terbaik .card {
+    padding: 2rem; border-radius: var(--border-radius-card);
+}
+.schedule-item, .event-item-list { background: rgba(0, 0, 205, 0.15); border: 1px solid var(--border-glass); }
+.insight-terbaik .card { background-color: #f8f9fa; color: var(--text-on-light-primary); }
+.footer { text-align: center; padding: 3rem 1.5rem 2rem 1.5rem; margin-top: 4rem; }
+.footer .footer-contacts { margin: 1rem 0; display: flex; gap: 1.5rem; justify-content: center; }
+.footer .footer-contacts a { color: var(--text-on-dark-secondary); text-decoration: none; }

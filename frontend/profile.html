@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    <link rel="stylesheet" href="/frontend/homePage.css"> 
+    <link rel="stylesheet" href="/frontend/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <div class="header-top">
+              <div class="logo-container">
+                <img src="/frontend/logoMSN.png" alt="Logo Mahad Nawawi" class="logo" />
+                <span id="header-portal-title" class="portal-title">Portal</span>
+              </div>
+              <div class="header-actions">
+                <div class="profile">
+                  <span id="header-profile-name">Nama Pengguna</span>
+                  <img id="header-profile-pic" src="/frontend/assets/images/default-profile.png" alt="Foto Profil" />
+                </div>
+              </div>
+            </div>
+            <nav id="main-menu"></nav>
+        </header>
+
+        <main class="container">
+            <section class="section profile-section">
+                <h2 class="text-center">Profil Pengguna</h2>
+                <div class="profile-layout">
+                    <div class="profile-sidebar">
+                        <div class="profile-picture-wrapper">
+                            <img id="profile-main-pic" src="/frontend/assets/images/default-profile.png" alt="Foto Profil">
+                            <label for="upload-pic" class="edit-pic-button">
+                                <i class="fas fa-camera"></i>
+                                <input type="file" id="upload-pic" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <h3 id="profile-main-name">Memuat Nama...</h3>
+                        <p id="profile-main-role" class="role-badge">Memuat Peran...</p>
+                        <a href="/frontend/homePage.html" class="back-to-home-btn"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
+                    </div>
+
+                    <div class="profile-details-form">
+                        <form id="profileForm">
+                            <h4>Informasi Pribadi</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label for="fullName">Nama Lengkap</label><input type="text" id="fullName" readonly></div>
+                                <div class="form-group"><label for="dob">Tanggal Lahir</label><input type="date" id="dob" readonly></div>
+                            </div>
+                            <div class="form-row">
+                                 <div class="form-group"><label for="phone">No. Telepon</label><input type="tel" id="phone" readonly></div>
+                                <div class="form-group"><label for="parentPhone">No. Telepon Ortu</label><input type="tel" id="parentPhone" readonly></div>
+                            </div>
+                            <hr>
+                            <h4>Informasi Akademik</h4>
+                             <div class="form-row">
+                                <div class="form-group"><label for="nim">NIM</label><input type="text" id="nim" readonly></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label for="faculty">Fakultas</label><input type="text" id="faculty" readonly></div>
+                                <div class="form-group"><label for="major">Jurusan</label><input type="text" id="major" readonly></div>
+                            </div>
+                            <hr>
+                            <h4>Informasi Akun</h4>
+                            <div class="form-row">
+                                <div class="form-group"><label for="username">Username</label><input type="text" id="username" readonly></div>
+                                <div class="form-group"><label for="email">Email</label><input type="email" id="email" readonly></div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="form-actions">
+    <button type="button" id="editProfileBtn">Edit Profil</button> 
+    <button type="submit" id="saveProfileBtn" class="hidden">Simpan Perubahan</button>
+</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/frontend/profile.js"></script>
+</body>
+</html>

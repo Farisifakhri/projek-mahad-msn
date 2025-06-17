@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Mahasantri - Portal Mudabbir</title>
+    <link rel="stylesheet" href="/frontend/homePage.css">
+    <link rel="stylesheet" href="/frontend/absensi.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <div class="header-top">
+                <div class="logo-container">
+                    <img src="/frontend/logoMSN.png" alt="Logo Mahad Nawawi" class="logo" />
+                    <span class="portal-title">Dashboard Mudabbir</span>
+                </div>
+                <div class="header-actions">
+                    <div class="profile">
+                        <span id="profile-name">Nama Mudabbir</span>
+                        <img id="profile-pic" src="/frontend/assets/images/default-profile.png" alt="Foto Profil" />
+                    </div>
+                </div>
+            </div>
+            <nav id="main-menu"></nav>
+        </header>
+
+        <main class="container">
+            <section class="section">
+                <h2 class="text-center">Formulir Absensi Mahasantri</h2>
+                <p class="text-center">Pilih tanggal dan jenis kegiatan, lalu rekam kehadiran mahasantri.</p>
+                <div class="filter-container">
+                    <div class="form-group">
+                        <label for="attendance-date">Tanggal Absensi</label>
+                        <input type="date" id="attendance-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendance-type">Jenis Kegiatan</label>
+                        <select id="attendance-type">
+                            <option value="subuh">Salat Subuh & Tahfidz</option>
+                            <option value="talim">Ta'lim Kitab</option>
+                            <option value="morning_class">Morning Class</option>
+                            <option value="ekskul">Ekstrakurikuler</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="attendance-table-container">
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Lengkap</th>
+                                <th>NIM</th>
+                                <th>Status Kehadiran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mahasantri-list-body">
+                            <tr><td colspan="4" style="text-align:center; padding: 2rem;">Memuat data mahasantri...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-actions">
+                    <a href="/frontend/homePage.html" class="btn-secondary">Kembali ke Beranda</a>
+                    <button id="save-attendance-btn" class="btn-primary">Simpan Absensi</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/frontend/absensi_mahasantri.js"></script>
+</body>
+</html>

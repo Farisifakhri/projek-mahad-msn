@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Mabna Syekh Nawawi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/frontend/homePage.css" />
+</head>
+<body>
+
+<div class="page-container">
+  <header>
+    <div class="header-top">
+      <div class="logo-container">
+        <img src="/frontend/logoMSN.png" alt="Logo Mahad Nawawi" class="logo" /> 
+        <span class="portal-title">Portal Mabna Syekh Nawawi</span>
+      </div>
+      <div class="header-actions">
+        <div class="profile">
+          <span id="profile-name">Nama Pengguna</span>
+          <img id="profile-pic" src="/frontend/assets/images/default-profile.png" alt="Foto Profil" />
+        </div>
+      </div>
+    </div>
+    <nav id="main-menu"></nav> 
+  </header>
+
+  <section class="hero-section" id="beranda">
+    <div class="hero-content">
+      <h1>Selamat Datang</h1>
+      <p>Portal informasi dan layanan terpadu.</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section" style="text-align: center;">
+        <h2 style="color: var(--text-on-dark-primary);">Memuat Konten...</h2>
+    </section>
+  </div>
+
+  <footer class="footer">
+    </footer>
+</div>
+
+<script src="/frontend/homePage.js"></script>
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

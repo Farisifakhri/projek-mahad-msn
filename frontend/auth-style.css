@@ -1,0 +1,508 @@
+/* auth-style.css - GAYA ASLI DENGAN INTRO & TRANSISI BARU */
+
+:root {
+  --primary-blue: #0000CD;       /* MediumBlue */
+  --light-blue-accent: #4169E1;  /* RoyalBlue */
+  --darker-blue-base: #00008B;    /* DarkBlue */
+  --sky-blue-highlight: #87CEFA; /* LightSkyBlue untuk highlight */
+
+  --text-on-dark-primary: #ffffff;
+  --text-on-dark-secondary: #e2e8f0;
+  --text-on-light-primary: #1e293b;
+  --text-on-light-secondary: #4b5563;
+
+  --bg-body-gradient-start: var(--darker-blue-base);
+  --bg-body-gradient-mid1: var(--primary-blue);
+  --bg-body-gradient-mid2: var(--light-blue-accent);
+  --bg-body-gradient-end: var(--primary-blue);
+
+  --form-panel-bg: #ffffff;
+  --branding-panel-bg: rgba(30, 64, 175, 0.45);
+  --border-glass: rgba(255, 255, 255, 0.2);
+  --input-border-color: #cbd5e1;
+  --input-focus-border-color: var(--primary-blue);
+  --input-focus-shadow: rgba(0, 0, 205, 0.2);
+}
+
+html, body {
+  height: 100%; margin: 0; padding: 0; overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: linear-gradient(55deg,
+    var(--bg-body-gradient-start), var(--bg-body-gradient-mid1),
+    var(--bg-body-gradient-mid2), var(--bg-body-gradient-mid1),
+    var(--bg-body-gradient-end)
+  );
+  background-size: 400% 400%;
+  animation: gradientFlowAnimation 22s ease infinite alternate;
+}
+
+@keyframes gradientFlowAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ======================= INTRO SCREEN (BARU) ======================= */
+#introScreen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #030814;
+    display: flex;
+    align-items: center; justify-content: center;
+    z-index: 100;
+    transition: opacity 0.8s ease-out, visibility 0.8s;
+}
+#introScreen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.intro-content {
+    text-align: center;
+    color: var(--text-on-dark-primary);
+    opacity: 0;
+    transform: translateY(15px);
+    animation: contentFadeIn 1s ease-out 0.5s forwards;
+}
+@keyframes contentFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+.intro-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 2rem;
+    animation: logoPulse 4s infinite ease-in-out;
+}
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--sky-blue-highlight)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--sky-blue-highlight)); }
+}
+.intro-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid var(--sky-blue-highlight);
+    animation: typing 2.5s steps(10, end) 1s 1 normal both;
+}
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+.intro-subtitle {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+.intro-enter-button {
+    background: transparent;
+    border: 2px solid var(--sky-blue-highlight);
+    color: var(--sky-blue-highlight);
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 3rem;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.intro-enter-button:hover {
+    background-color: var(--sky-blue-highlight);
+    color: var(--darker-blue-base);
+    box-shadow: 0 0 20px var(--sky-blue-highlight);
+}
+.intro-enter-button i {
+    transition: transform 0.3s ease;
+}
+.intro-enter-button:hover i {
+    transform: translateX(5px);
+}
+
+/* ======================= LOADING OVERLAY (BARU) ======================= */
+#loadingOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(3, 8, 20, 0.9);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center; justify-content: center;
+    z-index: 110;
+    transition: opacity 0.5s ease-out, visibility 0.5s;
+    opacity: 1;
+    visibility: visible;
+}
+.loading-box {
+    text-align: center;
+    color: var(--text-on-dark-primary);
+}
+.loading-logo img {
+    width: 80px;
+    margin-bottom: 1rem;
+    animation: logoPulse 4s infinite ease-in-out;
+}
+.loading-box p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+.loading-bar-container {
+    width: 250px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--sky-blue-highlight);
+    border-radius: 4px;
+    transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ======================= KONTEN UTAMA ======================= */
+.page-container {
+  display: flex; width: 100%; height: 100%;
+  overflow: hidden;
+  transition: opacity 0.8s ease-in;
+}
+
+/* Panel Utama */
+.branding-panel {
+  flex: 0 0 44%;
+  background-color: var(--branding-panel-bg);
+  backdrop-filter: blur(12px);
+  color: white;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 45px; box-sizing: border-box;
+  order: 1;
+  border-right: 1px solid var(--border-glass);
+}
+.form-panel {
+  flex: 0 0 56%;
+  display: flex;
+  box-sizing: border-box;
+  background-color: var(--form-panel-bg);
+  color: var(--text-on-light-primary);
+  position: relative;
+  overflow: hidden;
+  order: 2;
+  max-height: 100vh;
+}
+
+/* Saat Mode Register Aktif */
+.page-container.show-register .branding-panel { order: 2; border-right: none; border-left: 1px solid var(--border-glass); }
+.page-container.show-register .form-panel { order: 1; }
+
+.branding-content-wrapper {
+  display: flex; flex-direction: column; width: 100%; max-width: 420px;
+  align-items: center; justify-content: center; text-align: center;
+  transition: opacity 0.5s ease-in-out;
+}
+.branding-panel .logo-area { margin-bottom: 2rem; }
+.branding-panel .logo { width: 100px; height: 100px; }
+.branding-panel h2 { font-size: 2.2rem; margin-bottom: 15px; }
+.branding-panel p { font-size: 1rem; max-width: 360px; }
+.branding-panel .action-link-container {
+    width: 100%; margin-top: 35px; padding: 1.3rem;
+    background-color: rgba(0,0,0,0.3); border-radius: 12px;
+}
+.branding-panel .action-link {
+    display: inline-block; background-color: var(--sky-blue-highlight); color: var(--darker-blue-base);
+    padding: 0.85rem 2.2rem; border-radius: 30px; text-decoration: none; font-weight: 600;
+}
+
+/* --- PERBAIKAN: Animasi Transisi Form --- */
+#loginSection,
+#registerSection {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  padding: 20px 30px; box-sizing: border-box; display: flex;
+  align-items: center; justify-content: center;
+  transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease;
+  background-color: var(--form-panel-bg);
+  overflow-y: auto;
+}
+
+/* Default State (Login View) */
+#loginSection {
+  transform: translateX(0%); opacity: 1; z-index: 2;
+}
+#registerSection {
+  transform: translateX(100%); opacity: 0; z-index: 1;
+  align-items: flex-start;
+  padding-top: 40px; padding-bottom: 40px;
+}
+
+/* State ketika Register View Aktif */
+.page-container.show-register #loginSection {
+  transform: translateX(-100%); opacity: 0;
+}
+.page-container.show-register #registerSection {
+  transform: translateX(0%); opacity: 1;
+}
+
+/* Sisa CSS Form (tidak diubah) */
+.form-container { width: 100%; max-width: 420px; text-align: center; }
+.form-container.register-form-container { max-width: 750px; }
+.form-container h1, .form-container h2.form-title { font-size: 2.0rem; margin-bottom: 1.8rem; color: var(--darker-blue-base); }
+.input-group, .form-group { position: relative; margin-bottom: 1.2rem; text-align: left; }
+.input-group label, .form-group label { position: absolute; left: 18px; top: 16px; font-size: 0.95rem; color: var(--text-on-light-secondary); pointer-events: none; transition: all 0.25s; background-color: var(--form-panel-bg); padding: 0 5px; }
+.input-group input, .form-group input, .form-group select { width: 100%; padding: 15px 18px; border: 1px solid var(--input-border-color); border-radius: 8px; box-sizing: border-box; font-size: 0.95rem; }
+.input-group input:focus + label, .input-group input:not([placeholder=" "]) + label, .form-group input:focus + label, .form-group input:not([placeholder=" "]) + label, .form-group select:focus + label, .form-group select:valid + label { top: 0px; transform: translateY(-50%) scale(0.82); font-size: 0.78rem; color: var(--primary-blue); }
+button[type="submit"] { width: 100%; padding: 16px 20px; background-image: linear-gradient(to right, var(--light-blue-accent) 0%, var(--primary-blue) 50%, var(--light-blue-accent) 100%); background-size: 220% auto; color: white; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: 600; cursor: pointer; margin-top: 1.5rem; position: relative; overflow: hidden;}
+button[type="submit"].loading::after { content: ''; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin-left: -11px; margin-top: -11px; border: 3.5px solid rgba(255, 255, 255, 0.35); border-top-color: white; border-radius: 50%; animation: buttonSpinner 0.8s linear infinite; }
+@keyframes buttonSpinner { to { transform: rotate(360deg); } }
+.error-msg, .form-group .error-message { background-color: #fff0f1; color: #d32f2f; padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; border: 1px solid #ffccd1; text-align: left; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
+
+#registerSection .form-container.register-form-container .form-title {
+  font-size: 2rem; margin-bottom: 1.5rem;
+}
+
+.input-group, .form-group {
+  position: relative; margin-bottom: 1.2rem; text-align: left;
+}
+#registerSection .form-group { margin-bottom: 1rem; }
+
+.input-group label, .form-group label {
+  position: absolute; left: 18px; top: 16px; font-size: 0.95rem;
+  color: var(--text-on-light-secondary); pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background-color: var(--form-panel-bg); padding: 0 5px; z-index: 1;
+}
+.input-group input, .form-group input, .form-group select {
+  width: 100%; padding: 15px 18px; border: 1px solid var(--input-border-color);
+  border-radius: 8px; box-sizing: border-box; font-size: 0.95rem;
+  color: var(--text-on-light-primary); background-color: var(--form-panel-bg);
+  position: relative; z-index: 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#registerSection .form-group input, #registerSection .form-group select {
+  padding: 14px 16px; font-size: 0.9rem;
+}
+#registerSection .form-group label { font-size: 0.9rem; top: 14px; }
+
+.input-group input:focus + label,
+.input-group input:not([placeholder=" "]) + label,
+.form-group input:focus + label,
+.form-group input:not([placeholder=" "]) + label,
+.form-group select:focus + label,
+.form-group select:valid + label {
+  top: 0px; transform: translateY(-50%) scale(0.82); font-size: 0.78rem;
+  color: var(--primary-blue); font-weight: 500;
+}
+#registerSection .form-group input:focus + label,
+#registerSection .form-group input:not([placeholder=" "]) + label,
+#registerSection .form-group select:focus + label,
+#registerSection .form-group select:valid + label {
+  font-size: 0.75rem;
+}
+.form-group input[type="date"] + label {
+  top: 0px; transform: translateY(-50%) scale(0.82); font-size: 0.78rem;
+  color: var(--primary-blue); font-weight: 500;
+}
+.form-group input[type="date"]:not(:placeholder-shown) + label {
+  top: 0px; transform: translateY(-50%) scale(0.82); font-size: 0.78rem;
+  color: var(--primary-blue); font-weight: 500;
+}
+
+
+.form-group select {
+  padding-right: 40px; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234A5568'%3E%3Cpath d='M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 18px center; background-size: 1.3em;
+}
+.password-group input { padding-right: 50px; }
+.toggle-password-button {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 8px;
+  font-size: 1.25rem; color: var(--text-on-light-secondary); z-index: 2; outline: none;
+  transition: color 0.2s ease;
+}
+.toggle-password-button:hover { color: var(--primary-blue); }
+
+.input-group input:focus, .form-group input:focus, .form-group select:focus {
+  outline: none; border-color: var(--input-focus-border-color);
+  box-shadow: 0 0 0 4px var(--input-focus-shadow);
+}
+
+button[type="submit"] {
+  width: 100%; padding: 16px 20px;
+  background-image: linear-gradient(to right, var(--light-blue-accent) 0%, var(--primary-blue) 50%, var(--light-blue-accent) 100%);
+  background-size: 220% auto; color: white; border: none; border-radius: 10px;
+  font-size: 1.05rem; font-weight: 600; letter-spacing: 0.75px; cursor: pointer;
+  margin-top: 1.5rem; box-shadow: 0 6px 20px 0 rgba(0, 0, 205, 0.38);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative; overflow: hidden;
+}
+#registerSection button[type="submit"] { margin-top: 1.2rem; }
+
+button[type="submit"]:hover:not(:disabled) {
+  background-position: right center;
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 25px 0 rgba(0, 0, 205, 0.48);
+}
+button[type="submit"]:active:not(:disabled) {
+  transform: translateY(-2px) scale(0.99);
+  box-shadow: 0 5px 15px 0 rgba(0, 0, 205, 0.35);
+}
+
+.ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0); animation: ripple-animation 0.6s linear; pointer-events: none;
+}
+@keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
+
+button[type="submit"].loading {
+  background-image: none; background-color: #525f7f;
+  color: rgba(255, 255, 255, 0.8); cursor: wait; box-shadow: none;
+}
+button[type="submit"].loading::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 22px; height: 22px; margin-left: -11px; margin-top: -11px;
+  border: 3.5px solid rgba(255, 255, 255, 0.35); border-top-color: white;
+  border-radius: 50%; animation: buttonSpinner 0.8s linear infinite;
+}
+@keyframes buttonSpinner { to { transform: rotate(360deg); } }
+
+.error-msg,
+.form-group .error-message,
+#generalFormError {
+  background-color: #fff0f1; color: #d32f2f;
+  padding: 10px 15px; border-radius: 6px;
+  font-size: 0.85rem; border: 1px solid #ffccd1; text-align: left;
+  box-shadow: 0 2px 4px rgba(211,47,47,0.1);
+}
+
+.error-msg { margin-bottom: 1.2rem; margin-top: -0.8rem; }
+.form-group .error-message { margin-top: 0.3rem; margin-bottom: 0; }
+#generalFormError { margin-top: 1rem; margin-bottom: 1rem; text-align: center; }
+
+.error-msg.hidden,
+.form-group .error-message.hidden,
+#generalFormError.hidden,
+.success-message.hidden {
+    display: none !important;
+}
+.form-group .error-message:empty {
+    display: none !important;
+}
+#generalFormError:empty {
+    display: none !important;
+}
+
+
+.form-group.error input, .form-group.error select {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 3.5px rgba(211,47,47, 0.15) !important;
+}
+.success-message {
+  color: #0f5132; background-color: #d1e7dd; border: 1px solid #badbcc;
+  padding: 1rem 1.25rem; margin-top: 1.2rem; border-radius: 8px;
+  font-size: 0.95rem; text-align: center;
+  box-shadow: 0 2px 4px rgba(15,81,50,0.1);
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr; gap: 0 1.5rem; }
+#registerSection .form-grid { gap: 0.8rem 1.5rem; }
+@media (min-width: 600px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+
+/* --- Responsif --- */
+@media (max-width: 992px) {
+  .page-container { flex-direction: column; height: auto; min-height: 100vh; }
+  .branding-panel, .page-container.show-register .branding-panel {
+    flex: 0 0 auto; min-height: auto; padding: 30px 20px;
+    transform: translateX(0);
+    animation: panelFadeInUp 0.9s ease-out 0.4s forwards;
+    order: 0 !important;
+    border-right: none; border-left: none;
+    border-bottom: 1px solid var(--border-glass);
+  }
+  .form-panel, .page-container.show-register .form-panel {
+    flex: 1 1 auto; padding: 30px 20px;
+    transform: translateX(0);
+    animation: panelFadeInUp 0.9s ease-out 0.6s forwards;
+    order: 1 !important;
+    overflow-y: auto;
+  }
+  @keyframes panelFadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #brandingLoginContent.branding-content-wrapper,
+  .page-container.show-register #brandingRegisterContent.branding-content-wrapper {
+    flex-direction: column !important; /* PERBAIKAN: Tambah !important agar konsisten */
+    align-items: center !important; /* PERBAIKAN: Tambah !important */
+    gap: 0;
+    text-align: center !important; /* PERBAIKAN: Tambah !important */
+  }
+  #brandingLoginContent .logo-area,
+  .page-container.show-register #brandingRegisterContent .logo-area {
+    order: 1; margin-right: 0; margin-left: 0; margin-bottom: 20px;
+  }
+  #brandingLoginContent .text-area,
+  .page-container.show-register #brandingRegisterContent .text-area {
+    order: 2; text-align: center !important;
+  }
+  #brandingLoginContent .text-area h2, #brandingLoginContent .text-area p,
+  .page-container.show-register #brandingRegisterContent .text-area h2,
+  .page-container.show-register #brandingRegisterContent .text-area p {
+    text-align: center !important;
+  }
+  #brandingLoginContent .action-link-container,
+  .page-container.show-register #brandingRegisterContent .action-link-container {
+    order: 3; margin-top: 25px;
+  }
+
+  #registerSection { align-items: center; padding-top: 30px; padding-bottom: 30px;}
+  .form-container.register-form-container .form-grid { gap: 0.8rem 1.2rem; }
+}
+
+@media (max-width: 767px) {
+    #loginSection, #registerSection { padding: 25px 15px; align-items: flex-start; }
+    .form-grid { grid-template-columns: 1fr !important; gap: 0.8rem 0 !important; }
+    #registerSection .form-grid { gap: 0.8rem 0 !important; }
+}
+
+@media (max-width: 480px) {
+  .branding-panel h2 { font-size: 1.8rem; }
+  .branding-panel p { font-size: 0.95rem; }
+  .branding-panel .logo { width: 80px; height: 80px; }
+  #loginSection, #registerSection { padding: 20px 10px; }
+  .form-container h1, .form-container h2.form-title { font-size: 1.8rem; margin-bottom: 1.5rem; }
+  .input-group, .form-group { margin-bottom: 1.0rem; }
+  .input-group input, .form-group input, .form-group select { padding: 12px 15px; font-size: 0.9rem;}
+  #registerSection .form-group input, #registerSection .form-group select { padding: 12px 15px; font-size: 0.9rem; }
+  .input-group label, .form-group label { left: 15px; font-size: 0.85rem; top: 13px;}
+  #registerSection .form-group label { font-size: 0.85rem; top: 13px;}
+
+  .input-group input:focus + label,
+  .input-group input:not([placeholder=" "]) + label,
+  .form-group input:focus + label,
+  .form-group input:not([placeholder=" "]) + label,
+  .form-group select:focus + label,
+  .form-group select:valid + label { font-size: 0.7rem; }
+  #registerSection .form-group input:focus + label,
+  #registerSection .form-group input:not([placeholder=" "]) + label,
+  #registerSection .form-group select:focus + label,
+  #registerSection .form-group select:valid + label { font-size: 0.7rem;}
+
+  button[type="submit"] { font-size: 0.95rem; padding: 14px 16px; margin-top: 1rem;}
+  #registerSection button[type="submit"] { margin-top: 1rem;}
+  .form-container.register-form-container { max-width: 100%; padding: 0.25rem; }
+}

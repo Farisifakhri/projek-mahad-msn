@@ -1,0 +1,158 @@
+/* profile.css */
+
+.profile-section {
+    padding: 2rem;
+}
+
+.profile-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+}
+
+/* Kolom Kiri - Sidebar Profil */
+.profile-sidebar {
+    flex: 1;
+    min-width: 280px;
+    max-width: 320px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    border-radius: var(--border-radius-card);
+}
+
+.profile-picture-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.5rem auto;
+}
+
+#profile-main-pic {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--sky-blue-soft);
+}
+
+.edit-pic-button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    background-color: var(--light-blue-accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: background-color 0.3s;
+}
+
+.edit-pic-button:hover {
+    background-color: var(--primary-blue);
+}
+
+.edit-pic-button input.hidden {
+    display: none;
+}
+
+#profile-main-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-on-dark-primary);
+    margin: 0;
+}
+
+.role-badge {
+    display: inline-block;
+    background-color: var(--sky-blue-soft);
+    color: var(--darker-blue-base);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    text-transform: capitalize;
+}
+
+.back-to-home-btn {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--text-on-dark-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+.back-to-home-btn:hover {
+    background-color: var(--border-glass);
+    color: var(--text-on-dark-primary);
+}
+
+/* Kolom Kanan - Form Detail */
+.profile-details-form {
+    flex: 2;
+    min-width: 400px;
+}
+
+.profile-details-form h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--sky-blue-soft);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.profile-details-form hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--border-glass);
+    margin: 2rem 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-on-dark-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-glass);
+    background-color: rgba(0,0,0,0.2);
+    color: var(--text-on-dark-primary);
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Membuat input readonly terlihat berbeda */
+.form-group input:read-only {
+    background-color: rgba(0,0,0,0.1);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none;
+}

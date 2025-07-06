@@ -1,5 +1,4 @@
-// homePage.js - KODE LENGKAP DENGAN DASHBOARD DINAMIS
-
+const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
 document.addEventListener('DOMContentLoaded', function() {
     // --- Autentikasi dan Inisialisasi Awal ---
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let rekapAbsensiHTML = `<p>Memuat rekap absensi...</p>`;
             try {
                 const today = new Date().toISOString().slice(0, 10);
-                const response = await fetch(`http://localhost:3000/api/attendance/recap/${user.id}/${today}`);
+               const response = await fetch(`${apiUrl}/api/attendance/recap/${user.id}/${today}`);
                 const recapData = await response.json();
 
                 if (recapData.length > 0) {

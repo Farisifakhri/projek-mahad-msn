@@ -1,4 +1,4 @@
-// profile.js - VERSI FINAL dengan alur upload yang aman
+const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // --- Autentikasi & Ambil data user dari localStorage ---
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // --- Logika Utama: Ambil data terbaru dari Server saat halaman dimuat ---
     try {
-        const response = await fetch(`http://localhost:3000/api/user/${user.id}`);
+        const response = await fetch(`${apiUrl}/api/user/${user.id}`);
         const result = await response.json();
         if (result.success) {
             populateProfileData(result.user);

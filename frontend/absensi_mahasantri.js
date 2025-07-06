@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // ===INISIALISASI & SETUP AWAL===
+const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
+
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     // Cek jika bukan mudabbir (untuk proteksi sederhana)
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     async function fetchAndDisplayMahasantri() {
         try {
-            const response = await fetch('http://localhost:3000/api/users/mahasantri');
+            const response = await fetch(`${apiUrl}/api/users/mahasantri`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -151,5 +151,4 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.clear();
             window.location.href = 'frontend/auth.html'; // Arahkan ke halaman login
         });
-    }
-});
+    };

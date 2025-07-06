@@ -26,14 +26,14 @@ const db = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT, // WAJIB ADA untuk koneksi ke Railway
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    // BARU: Opsi SSL, aktifkan jika koneksi ke database cloud gagal.
-    // Biasanya diperlukan untuk database eksternal.
-    // ssl: {
-    //     rejectUnauthorized: false 
-    // }
+    ssl: {
+        // WAJIB DIAKTIFKAN untuk koneksi ke Railway
+        rejectUnauthorized: false 
+    }
 });
 
 // === BARU: KONFIGURASI CLOUDINARY ===

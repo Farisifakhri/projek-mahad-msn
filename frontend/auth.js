@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginSubmitButton.classList.add('loading');
 
             try {
-                const response = await fetch('http://localhost:3000/api/login', {
+                const response = await fetch(`${apiUrl}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -84,8 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     loadingOverlay.classList.remove('hidden');
                     setTimeout(() => { if (loadingProgressBar) loadingProgressBar.style.width = '100%'; }, 100);
-                    setTimeout(() => { window.location.href = '/frontend/homePage.html'; }, 1800);
-
+                    setTimeout(() => { window.location.href = 'homePage.html'; }, 1800);
                 } else {
                     loginErrorAlert.textContent = result.message || 'Login gagal.';
                     loginErrorAlert.classList.remove('hidden');

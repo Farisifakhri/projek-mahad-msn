@@ -1,4 +1,4 @@
-// server.js - Versi Final Siap Deployment
+// server.js - Versi Final Siap Deployment Cloud
 
 const express = require('express');
 const mysql = require('mysql2/promise');
@@ -6,7 +6,11 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const multer = require('multer');
-const fs = require('fs');
+// DIHAPUS: const fs = require('fs'); // Tidak lagi diperlukan untuk menyimpan file lokal
+
+// BARU: Import library untuk integrasi Cloudinary
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 
@@ -14,46 +18,50 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// DIHAPUS: app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Tidak lagi menyajikan file dari server lokal
 
 // === KONFIGURASI DATABASE DARI ENVIRONMENT VARIABLES ===
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  // Opsi SSL seringkali diperlukan untuk koneksi aman ke database cloud seperti Render
-  ssl: {
-      rejectUnauthorized: true
-  }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    // BARU: Opsi SSL, aktifkan jika koneksi ke database cloud gagal.
+    // Biasanya diperlukan untuk database eksternal.
+    // ssl: {
+    //     rejectUnauthorized: false 
+    // }
 });
 
-// === KONFIGURASI UPLOAD FILE (MULTER) ===
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const dir = 'uploads/profile_pictures/';
-        if (!fs.existsSync(dir)){
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        cb(null, dir);
-    },
-    filename: function (req, file, cb) {
-        const userId = req.body.userId || 'unknown';
-        const fileExtension = path.extname(file.originalname);
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `user-${userId}-${uniqueSuffix}${fileExtension}`);
-    }
+// === BARU: KONFIGURASI CLOUDINARY ===
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
-const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } });
+
+// === DIUBAH: KONFIGURASI UPLOAD FILE MENGGUNAKAN CLOUDINARY ===
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'projek-mahad-msn/profile_pictures', // Nama folder di Cloudinary
+        allowed_formats: ['jpg', 'png', 'jpeg'],
+        // Transformasi bisa ditambahkan di sini, contoh: resize gambar saat upload
+        transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    },
+});
+
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5 MB limit
 
 // ===================================
 // ===         API ENDPOINTS         ===
 // ===================================
 
 // --- API OTENTIKASI & USER ---
+// ... (Kode untuk /api/register, /api/login, /api/user/:id, /api/user/:id tidak berubah, sudah bagus)
 app.post('/api/register', async (req, res) => {
     const { username, email, password, fullName, nim, phone, parentPhone, faculty, major, dob, role } = req.body;
     try {
@@ -65,7 +73,7 @@ app.post('/api/register', async (req, res) => {
         res.status(201).json({ success: true, message: 'Registrasi berhasil!' });
     } catch (error) {
         console.error('Register error:', error);
-        res.status(500).json({ success: false, message: 'Gagal melakukan registrasi.' });
+        res.status(500).json({ success: false, message: 'Gagal melakukan registrasi.', error: error.message });
     }
 });
 
@@ -83,7 +91,7 @@ app.post('/api/login', async (req, res) => {
         res.json({ success: true, message: 'Login berhasil!', user: userWithoutPassword });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.' });
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.', error: error.message });
     }
 });
 
@@ -96,7 +104,7 @@ app.get('/api/user/:id', async (req, res) => {
         res.json({ success: true, user: userWithoutPassword });
     } catch (error) {
         console.error('Fetch user error:', error);
-        res.status(500).json({ success: false, message: 'Gagal mengambil data pengguna.' });
+        res.status(500).json({ success: false, message: 'Gagal mengambil data pengguna.', error: error.message });
     }
 });
 
@@ -111,32 +119,41 @@ app.put('/api/user/:id', async (req, res) => {
         res.json({ success: true, message: 'Profil berhasil diperbarui!' });
     } catch (error) {
         console.error('Update user error:', error);
-        res.status(500).json({ success: false, message: 'Gagal memperbarui profil.' });
+        res.status(500).json({ success: false, message: 'Gagal memperbarui profil.', error: error.message });
     }
 });
 
+
+// === DIUBAH: Endpoint upload gambar sekarang menggunakan URL dari Cloudinary ===
 app.post('/api/profile/picture', upload.single('profileImage'), async (req, res) => {
     const { userId } = req.body;
-    if (!req.file || !userId) return res.status(400).json({ success: false, message: 'Informasi tidak lengkap.' });
+    // req.file.path sekarang berisi URL aman dari Cloudinary
+    if (!req.file || !userId) {
+        return res.status(400).json({ success: false, message: 'File gambar dan User ID diperlukan.' });
+    }
+
+    // URL gambar dari Cloudinary
+    const profilePicUrl = req.file.path; 
     
-    const profilePicUrl = req.file.path;
     try {
         await db.execute('UPDATE users SET profilePicUrl = ? WHERE id = ?', [profilePicUrl, userId]);
-        res.json({ success: true, message: 'Foto profil diperbarui.', profilePicUrl });
+        res.json({ success: true, message: 'Foto profil diperbarui.', profilePicUrl: profilePicUrl });
     } catch (error) {
         console.error('Update profile picture error:', error);
-        res.status(500).json({ success: false, message: 'Gagal memperbarui database.' });
+        res.status(500).json({ success: false, message: 'Gagal memperbarui database.', error: error.message });
     }
 });
 
+
 // --- API ABSENSI ---
+// ... (Kode untuk API Absensi tidak berubah, sudah bagus)
 app.get('/api/users/mahasantri', async (req, res) => {
     try {
         const [mahasantri] = await db.execute("SELECT id, nim, fullName FROM users WHERE role = 'mahasantri'");
         res.json(mahasantri);
     } catch (error) {
         console.error('Fetch mahasantri error:', error);
-        res.status(500).json({ success: false, message: 'Gagal mengambil data mahasantri.' });
+        res.status(500).json({ success: false, message: 'Gagal mengambil data mahasantri.', error: error.message });
     }
 });
 
@@ -157,7 +174,7 @@ app.post('/api/attendance', async (req, res) => {
         res.status(201).json({ success: true, message: 'Absensi berhasil disimpan!' });
     } catch (error) {
         console.error('Save attendance error:', error);
-        res.status(500).json({ success: false, message: 'Gagal menyimpan absensi.' });
+        res.status(500).json({ success: false, message: 'Gagal menyimpan absensi.', error: error.message });
     }
 });
 
@@ -169,13 +186,12 @@ app.get('/api/attendance/recap/:userId/:date', async (req, res) => {
         res.json(recap);
     } catch (error) {
         console.error('Fetch recap error:', error);
-        res.status(500).json({ success: false, message: 'Gagal mengambil data rekap.' });
+        res.status(500).json({ success: false, message: 'Gagal mengambil data rekap.', error: error.message });
     }
 });
-
 
 // === START SERVER ===
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`API Server berjalan di port ${PORT}`);
+    console.log(`API Server berjalan di port ${PORT}`);
 });

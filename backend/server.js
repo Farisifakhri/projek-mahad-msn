@@ -78,22 +78,44 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const [users] = await db.execute('SELECT * FROM users WHERE username = ? OR email = ?', [username, username]);
-        if (users.length === 0) return res.status(401).json({ success: false, message: 'Username atau password salah.' });
-        
-        const user = users[0];
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ success: false, message: 'Username atau password salah.' });
-        
-        const { password: _, ...userWithoutPassword } = user;
-        res.json({ success: true, message: 'Login berhasil!', user: userWithoutPassword });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.', error: error.message });
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: "Username dan password wajib diisi." });
+  }
+
+  try {
+    const [users] = await db.execute(
+      'SELECT * FROM users WHERE username = ? OR email = ?',
+      [username, username]
+    );
+
+    if (users.length === 0) {
+      return res.status(401).json({ success: false, message: "User tidak ditemukan." });
     }
+
+    const user = users[0];
+
+    if (!user.password) {
+      console.error('User ditemukan tapi kolom password kosong:', user);
+      return res.status(500).json({ success: false, message: "Password tidak tersedia di database." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Password salah." });
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    res.json({ success: true, message: "Login berhasil!", user: userWithoutPassword });
+
+  } catch (error) {
+    console.error("Login error:", error); // ini akan muncul di Railway logs
+    res.status(500).json({ success: false, message: "Terjadi kesalahan pada server.", error: error.message });
+  }
 });
+
+
 
 app.get('/api/user/:id', async (req, res) => {
     const { id } = req.params;

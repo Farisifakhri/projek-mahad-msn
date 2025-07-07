@@ -190,8 +190,8 @@ app.get('/api/attendance/recap/:userId/:date', async (req, res) => {
     }
 });
 
-// === START SERVER ===
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`API Server berjalan di port ${PORT}`);
+const port = process.env.PORT || 3000;
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server listening on ${port}`);
 });
+

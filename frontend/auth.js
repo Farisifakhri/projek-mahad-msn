@@ -1,13 +1,14 @@
-// auth.js - KODE LENGKAP DENGAN PERBAIKAN URL
+// auth.js - VERSI FIXED UNTUK DEPLOY
+
+const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Seleksi Elemen DOM Baru & Lama ---
     const introScreen = document.getElementById('introScreen');
     const enterButton = document.getElementById('enterButton');
     const pageContainer = document.getElementById('pageContainer');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const loadingProgressBar = document.getElementById('loadingProgressBar');
-    
+
     const brandingLoginContent = document.getElementById('brandingLoginContent');
     const brandingRegisterContent = document.getElementById('brandingRegisterContent');
     const switchToRegisterLink = document.getElementById('switchToRegisterLink');
@@ -21,10 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const successMsg = document.getElementById('successMsg');
     const facultySelect = document.getElementById('faculty');
     const majorSelect = document.getElementById('major');
-    const roleSelect = document.getElementById('role');
-    const registerFormGroups = registerForm ? Array.from(registerForm.querySelectorAll('.form-group')) : [];
 
-    // --- LOGIKA INTRO SCREEN ---
+    const majors = {
+        FITK: ["Pendidikan Agama Islam", "Pendidikan Bahasa Arab", "Manajemen Pendidikan Islam"],
+        FST: ["Teknik Informatika", "Agribisnis", "Sistem Informasi"]
+        // Tambahkan jika ada fakultas lain
+    };
+
     if (enterButton) {
         enterButton.addEventListener('click', () => {
             introScreen.classList.add('hidden');
@@ -32,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Fungsi untuk Mengganti Tampilan antara Login dan Register ---
     const showLoginView = () => {
         pageContainer.classList.remove('show-register');
         setTimeout(() => {
@@ -48,128 +51,106 @@ document.addEventListener('DOMContentLoaded', () => {
             brandingLoginContent.classList.add('hidden');
             brandingRegisterContent.classList.remove('hidden');
         }, 300);
-        document.title = 'Buat Akun | Mabna Syekh Nawawi';
+        document.title = 'Daftar | Mabna Syekh Nawawi';
     };
 
-    if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showRegisterView(); });
-    if (switchToLoginLink) switchToLoginLink.addEventListener('click', (e) => { e.preventDefault(); showLoginView(); });
+    if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', e => { e.preventDefault(); showRegisterView(); });
+    if (switchToLoginLink) switchToLoginLink.addEventListener('click', e => { e.preventDefault(); showLoginView(); });
 
-    // --- LOGIKA FORM LOGIN ---
+    if (facultySelect && majorSelect) {
+        facultySelect.addEventListener('change', function () {
+            const selected = this.value;
+            majorSelect.innerHTML = '<option disabled selected hidden>Pilih Jurusan</option>';
+            if (majors[selected]) {
+                majors[selected].forEach(mj => {
+                    const opt = document.createElement('option');
+                    opt.value = mj; opt.textContent = mj;
+                    majorSelect.appendChild(opt);
+                });
+            }
+        });
+    }
+
+    // LOGIN
     if (loginForm) {
-        loginForm.addEventListener('submit', async function (event) {
-            event.preventDefault();
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
+
             if (!username || !password) {
                 loginErrorAlert.textContent = 'Username dan Password wajib diisi.';
                 loginErrorAlert.classList.remove('hidden');
                 return;
             }
-            
+
             loginErrorAlert.classList.add('hidden');
             loginSubmitButton.disabled = true;
             loginSubmitButton.classList.add('loading');
 
             try {
-                const response = await fetch(`${apiUrl}/api/login`, {
+                const res = await fetch(`${apiUrl}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                const result = await response.json();
+
+                const result = await res.json();
 
                 if (result.success && result.user) {
                     localStorage.setItem('user', JSON.stringify(result.user));
                     localStorage.setItem('role', result.user.role);
-                    
                     loadingOverlay.classList.remove('hidden');
-                    setTimeout(() => { if (loadingProgressBar) loadingProgressBar.style.width = '100%'; }, 100);
-                    setTimeout(() => { window.location.href = 'homePage.html'; }, 1800);
+                    setTimeout(() => loadingProgressBar.style.width = '100%', 100);
+                    setTimeout(() => window.location.href = 'homePage.html', 1800);
                 } else {
                     loginErrorAlert.textContent = result.message || 'Login gagal.';
                     loginErrorAlert.classList.remove('hidden');
-                    loginSubmitButton.disabled = false;
-                    loginSubmitButton.classList.remove('loading');
                 }
-            } catch (error) {
-                console.error('Error saat login:', error);
-                loginErrorAlert.textContent = 'Terjadi kesalahan koneksi atau server.';
+            } catch (err) {
+                console.error(err);
+                loginErrorAlert.textContent = 'Terjadi kesalahan koneksi.';
                 loginErrorAlert.classList.remove('hidden');
+            } finally {
                 loginSubmitButton.disabled = false;
                 loginSubmitButton.classList.remove('loading');
             }
         });
     }
-    
-    // --- Sisa Logika dari File auth.js Asli Anda ---
-    function setupInputEventListeners(sectionId) {
-        document.querySelectorAll(`#${sectionId} .input-group input, #${sectionId} .form-group input, #${sectionId} .form-group select`).forEach(input => {
-            const isDateInput = input.type === 'date';
-            const updatePlaceholder = () => { if (!isDateInput) { input.value.trim() || (input.tagName === 'SELECT' && input.value) ? input.removeAttribute('placeholder') : input.setAttribute('placeholder', ' '); }};
-            updatePlaceholder();
-            input.addEventListener('blur', updatePlaceholder);
-            input.addEventListener('focus', () => { if (!isDateInput) input.setAttribute('placeholder', ' '); });
-            if (input.tagName === 'SELECT') input.addEventListener('change', updatePlaceholder);
-        });
-    }
-    setupInputEventListeners('loginSection');
-    setupInputEventListeners('registerSection');
 
-    const toggleLoginPasswordButton = document.getElementById('toggleLoginPassword');
-    if (toggleLoginPasswordButton) {
-        toggleLoginPasswordButton.addEventListener('click', function () {
-            const loginPasswordInput = document.getElementById('loginPassword');
-            const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            loginPasswordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-    }
-    
-    // --- Logika Form Registrasi ---
-    const majors = { FITK: ["Pendidikan Agama Islam", "Pendidikan Bahasa Arab", "Manajemen Pendidikan Islam"], FST: ["Teknik Informatika", "Agribisnis", "Sistem Informasi"], /* ...Lengkapi fakultas lain... */ };
-
-    if (facultySelect && majorSelect) {
-        facultySelect.addEventListener('change', function() {
-            const selectedFaculty = this.value;
-            majorSelect.innerHTML = '<option value="" disabled selected hidden> </option>';
-            if (majors[selectedFaculty]) {
-                majors[selectedFaculty].forEach(major => {
-                    const option = document.createElement('option');
-                    option.value = major; option.textContent = major;
-                    majorSelect.appendChild(option);
-                });
-            }
-        });
-    }
-
+    // REGISTER
     if (registerForm) {
-        registerForm.addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            // Lakukan validasi jika perlu
             const formData = new FormData(registerForm);
             const userData = Object.fromEntries(formData.entries());
 
             registerSubmitButton.disabled = true;
             registerSubmitButton.classList.add('loading');
-            
-            try 
-            {const response = await fetch(`${apiUrl}/api/login`, { /* ... */ });
-                const result = await response.json();
+
+            try {
+                const res = await fetch(`${apiUrl}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await res.json();
 
                 if (result.success) {
-                    successMsg.textContent = result.message || 'Akun berhasil dibuat! Silakan login.';
+                    successMsg.textContent = result.message || 'Registrasi berhasil.';
                     successMsg.classList.remove('hidden');
                     setTimeout(() => {
                         successMsg.classList.add('hidden');
                         showLoginView();
-                    }, 2500);
+                    }, 2000);
                 } else {
-                    generalFormError.textContent = "Gagal: " + (result.message || "Periksa kembali data Anda.");
+                    generalFormError.textContent = result.message || 'Registrasi gagal.';
                     generalFormError.classList.remove('hidden');
                 }
-            } catch (error) {
-                console.error("Error saat registrasi:", error);
-                generalFormError.textContent = "Terjadi kesalahan koneksi atau server.";
+            } catch (err) {
+                console.error(err);
+                generalFormError.textContent = 'Terjadi kesalahan koneksi.';
                 generalFormError.classList.remove('hidden');
             } finally {
                 registerSubmitButton.disabled = false;
@@ -177,6 +158,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
 
-const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
+    // Placeholder efek untuk input & select
+    function setupPlaceholders(id) {
+        document.querySelectorAll(`#${id} input, #${id} select`).forEach(input => {
+            const update = () => {
+                if (input.type !== 'date') {
+                    input.value.trim() || input.tagName === 'SELECT' && input.value
+                        ? input.removeAttribute('placeholder')
+                        : input.setAttribute('placeholder', ' ');
+                }
+            };
+            update();
+            input.addEventListener('blur', update);
+            input.addEventListener('focus', () => input.setAttribute('placeholder', ' '));
+            if (input.tagName === 'SELECT') input.addEventListener('change', update);
+        });
+    }
+
+    setupPlaceholders('loginSection');
+    setupPlaceholders('registerSection');
+
+    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+    if (toggleLoginPassword) {
+        toggleLoginPassword.addEventListener('click', () => {
+            const pw = document.getElementById('loginPassword');
+            const type = pw.getAttribute('type') === 'password' ? 'text' : 'password';
+            pw.setAttribute('type', type);
+            toggleLoginPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    }
+});

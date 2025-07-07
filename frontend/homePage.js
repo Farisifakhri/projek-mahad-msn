@@ -1,122 +1,191 @@
+// auth.js - VERSI FIXED UNTUK DEPLOY
+
 const apiUrl = 'https://projek-mahad-msn-production.up.railway.app';
-document.addEventListener('DOMContentLoaded', function() {
-    // --- Autentikasi dan Inisialisasi Awal ---
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const role = user.role || localStorage.getItem('role');
 
-    if (!role) {
-        window.location.href = '/frontend/auth.html'; // Path diperbaiki
-        return;
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const introScreen = document.getElementById('introScreen');
+    const enterButton = document.getElementById('enterButton');
+    const pageContainer = document.getElementById('pageContainer');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingProgressBar = document.getElementById('loadingProgressBar');
 
-    const profileNameElement = document.getElementById('profile-name');
-    const profilePicElement = document.getElementById('profile-pic');
-    const portalTitleElement = document.querySelector('.logo-container .portal-title');
-    const heroContentH1 = document.querySelector('.hero-section .hero-content h1');
-    const heroContentP = document.querySelector('.hero-section .hero-content p');
-    const mainMenuContainer = document.getElementById('main-menu');
+    const brandingLoginContent = document.getElementById('brandingLoginContent');
+    const brandingRegisterContent = document.getElementById('brandingRegisterContent');
+    const switchToRegisterLink = document.getElementById('switchToRegisterLink');
+    const switchToLoginLink = document.getElementById('switchToLoginLink');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginErrorAlert = document.getElementById('loginErrorAlert');
+    const loginSubmitButton = document.getElementById('loginSubmitButton');
+    const registerSubmitButton = document.getElementById('registerSubmitButton');
+    const generalFormError = document.getElementById('generalFormError');
+    const successMsg = document.getElementById('successMsg');
+    const facultySelect = document.getElementById('faculty');
+    const majorSelect = document.getElementById('major');
 
-    // --- Update Info Header Pengguna ---
-    if (profileNameElement) profileNameElement.textContent = user.fullName || 'Pengguna';
-    if (profilePicElement) profilePicElement.src = user.profilePicUrl || '/frontend/assets/images/default-profile.png';
-    if (portalTitleElement) portalTitleElement.textContent = role === 'mudabbir' ? 'Dashboard Mudabbir' : 'Portal Mahasantri';
-
-    // --- Definisi Menu ---
-    const menu_mudabbir = [
-        { href: '/frontend/homePage.html', label: 'Beranda' },
-        { href: '/frontend/profile.html', label: 'Profil' },
-        { href: '#', label: 'Logout', id: 'logout-btn' }
-    ];
-
-    const menu_mahasantri = [
-        { href: '#beranda', label: 'Beranda', isScroll: true },
-        { href: '/frontend/profile.html', label: 'Profil Lengkap' },
-        { href: '#kontak', label: 'Hubungi Kami', isScroll: true },
-        { href: '#', label: 'Logout', id: 'logout-btn' }
-    ];
-    const menuList = role === 'mudabbir' ? menu_mudabbir : menu_mahasantri;
-
-    // --- Render Menu ---
-    if (mainMenuContainer) {
-        let menuHTML = '<ul class="main-menu-list">';
-        menuList.forEach(item => {
-            menuHTML += `<li><a href="${item.href}" id="${item.id || ''}" class="${item.isScroll ? 'scroll-to-section' : ''}">${item.label}</a></li>`;
-        });
-        menuHTML += '</ul>';
-        mainMenuContainer.innerHTML = menuHTML;
-    }
-
-    // --- Fungsi Render Konten Dinamis ---
-    const generateKonten = {
-        mudabbir: () => `
-            <section class="section">
-                <h2 class="text-center">Panel Kontrol Utama</h2>
-                <div class="button-grid">
-                    <a href="/frontend/absensi_mahasantri.html" class="action-button"><i class="fas fa-users"></i>Absensi Mahasantri</a>
-                    <a href="#" class="action-button"><i class="fas fa-exclamation-triangle"></i>Rekap Pelanggaran</a>
-                </div>
-            </section>
-        `,
-        mahasantri: async () => {
-            let rekapAbsensiHTML = `<p>Memuat rekap absensi...</p>`;
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-               const response = await fetch(`${apiUrl}/api/attendance/recap/${user.id}/${today}`);
-                const recapData = await response.json();
-
-                if (recapData.length > 0) {
-                    rekapAbsensiHTML = '<ul>';
-                    recapData.forEach(item => {
-                        let activityName = item.attendance_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                        rekapAbsensiHTML += `<li>${activityName}: <strong>${item.status}</strong></li>`;
-                    });
-                    rekapAbsensiHTML += '</ul>';
-                } else {
-                    rekapAbsensiHTML = '<p>Belum ada rekap absensi untuk hari ini.</p>';
-                }
-            } catch (error) {
-                console.error("Gagal memuat rekap absensi:", error);
-                rekapAbsensiHTML = '<p style="color: #F44336;">Gagal memuat rekap absensi.</p>';
-            }
-            
-            const jadwal = `<ul><li><span class="time">04.30</span> Salat Subuh & Tahfidz</li><li><span class="time">07.00</span> Morning Class</li></ul>`;
-            return `
-                <section class="section" id="rekap-performa"><h2 class="text-center">Rekap Hari Ini</h2><div class="row"><div class="col-lg-6"><div class="insight-terbaik card"><h3><i class="fas fa-user-check"></i> Rekap Absensi</h3>${rekapAbsensiHTML}</div></div><div class="col-lg-6"><div class="schedule-item h-100"><h3>Jadwal Harian</h3>${jadwal}</div></div></div></section>
-                <section class="section" id="kontak"><h2 class="text-center">Hubungi Pengurus</h2><p class="text-center">Gunakan kontak di footer halaman.</p></section>
-            `;
-        }
+    const majors = {
+        FITK: ["Pendidikan Agama Islam", "Pendidikan Bahasa Arab", "Manajemen Pendidikan Islam"],
+        FST: ["Teknik Informatika", "Agribisnis", "Sistem Informasi"]
+        // Tambahkan jika ada fakultas lain
     };
-    
-    // --- Render Konten Utama ---
-    const mainContainer = document.querySelector('.container');
-    if (mainContainer) {
-        if (role === 'mudabbir') {
-            if (heroContentH1) heroContentH1.textContent = 'Dashboard Mudabbir';
-            if (heroContentP) heroContentP.textContent = `Selamat datang, ${user.fullName || 'Mudabbir'}.`;
-            mainContainer.innerHTML = generateKonten.mudabbir();
-        } else {
-            if (heroContentH1) heroContentH1.textContent = `Assalamu'alaikum, ${user.fullName || 'Mahasantri'}!`;
-            if (heroContentP) heroContentP.textContent = `Manfaatkan fitur di bawah ini untuk mendukung kegiatan Anda.`;
-            generateKonten.mahasantri().then(html => mainContainer.innerHTML = html);
-        }
+
+    if (enterButton) {
+        enterButton.addEventListener('click', () => {
+            introScreen.classList.add('hidden');
+            pageContainer.classList.remove('hidden');
+        });
     }
-    
-    // --- Event Listeners ---
-    document.body.addEventListener('click', function(e) {
-        if (e.target.matches('#logout-btn')) {
-            e.preventDefault();
-            localStorage.clear();
-            window.location.href = '/frontend/auth.html';
-        }
-        if (e.target.matches('.scroll-to-section')) {
-            e.preventDefault();
-            const targetId = e.target.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' });
-            } else if (targetId === 'beranda') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const showLoginView = () => {
+        pageContainer.classList.remove('show-register');
+        setTimeout(() => {
+            brandingLoginContent.classList.remove('hidden');
+            brandingRegisterContent.classList.add('hidden');
+        }, 300);
+        document.title = 'Login | Mabna Syekh Nawawi';
+    };
+
+    const showRegisterView = () => {
+        pageContainer.classList.add('show-register');
+        setTimeout(() => {
+            brandingLoginContent.classList.add('hidden');
+            brandingRegisterContent.classList.remove('hidden');
+        }, 300);
+        document.title = 'Daftar | Mabna Syekh Nawawi';
+    };
+
+    if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', e => { e.preventDefault(); showRegisterView(); });
+    if (switchToLoginLink) switchToLoginLink.addEventListener('click', e => { e.preventDefault(); showLoginView(); });
+
+    if (facultySelect && majorSelect) {
+        facultySelect.addEventListener('change', function () {
+            const selected = this.value;
+            majorSelect.innerHTML = '<option disabled selected hidden>Pilih Jurusan</option>';
+            if (majors[selected]) {
+                majors[selected].forEach(mj => {
+                    const opt = document.createElement('option');
+                    opt.value = mj; opt.textContent = mj;
+                    majorSelect.appendChild(opt);
+                });
             }
-        }
-    });
+        });
+    }
+
+    // LOGIN
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!username || !password) {
+                loginErrorAlert.textContent = 'Username dan Password wajib diisi.';
+                loginErrorAlert.classList.remove('hidden');
+                return;
+            }
+
+            loginErrorAlert.classList.add('hidden');
+            loginSubmitButton.disabled = true;
+            loginSubmitButton.classList.add('loading');
+
+            try {
+                const res = await fetch(`${apiUrl}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await res.json();
+
+                if (result.success && result.user) {
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    localStorage.setItem('role', result.user.role);
+                    loadingOverlay.classList.remove('hidden');
+                    setTimeout(() => loadingProgressBar.style.width = '100%', 100);
+                    setTimeout(() => window.location.href = 'homePage.html', 1800);
+                } else {
+                    loginErrorAlert.textContent = result.message || 'Login gagal.';
+                    loginErrorAlert.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                loginErrorAlert.textContent = 'Terjadi kesalahan koneksi.';
+                loginErrorAlert.classList.remove('hidden');
+            } finally {
+                loginSubmitButton.disabled = false;
+                loginSubmitButton.classList.remove('loading');
+            }
+        });
+    }
+
+    // REGISTER
+    if (registerForm) {
+        registerForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+            const userData = Object.fromEntries(formData.entries());
+
+            registerSubmitButton.disabled = true;
+            registerSubmitButton.classList.add('loading');
+
+            try {
+                const res = await fetch(`${apiUrl}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    successMsg.textContent = result.message || 'Registrasi berhasil.';
+                    successMsg.classList.remove('hidden');
+                    setTimeout(() => {
+                        successMsg.classList.add('hidden');
+                        showLoginView();
+                    }, 2000);
+                } else {
+                    generalFormError.textContent = result.message || 'Registrasi gagal.';
+                    generalFormError.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                generalFormError.textContent = 'Terjadi kesalahan koneksi.';
+                generalFormError.classList.remove('hidden');
+            } finally {
+                registerSubmitButton.disabled = false;
+                registerSubmitButton.classList.remove('loading');
+            }
+        });
+    }
+
+    // Placeholder efek untuk input & select
+    function setupPlaceholders(id) {
+        document.querySelectorAll(`#${id} input, #${id} select`).forEach(input => {
+            const update = () => {
+                if (input.type !== 'date') {
+                    input.value.trim() || input.tagName === 'SELECT' && input.value
+                        ? input.removeAttribute('placeholder')
+                        : input.setAttribute('placeholder', ' ');
+                }
+            };
+            update();
+            input.addEventListener('blur', update);
+            input.addEventListener('focus', () => input.setAttribute('placeholder', ' '));
+            if (input.tagName === 'SELECT') input.addEventListener('change', update);
+        });
+    }
+
+    setupPlaceholders('loginSection');
+    setupPlaceholders('registerSection');
+
+    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+    if (toggleLoginPassword) {
+        toggleLoginPassword.addEventListener('click', () => {
+            const pw = document.getElementById('loginPassword');
+            const type = pw.getAttribute('type') === 'password' ? 'text' : 'password';
+            pw.setAttribute('type', type);
+            toggleLoginPassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    }
 });
